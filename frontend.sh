@@ -6,10 +6,10 @@
 
 UserID=$(id -u)
 
-R="\[e31m"
-G="\[e32m"
-Y="\[e33m"
-N="\[e0m"
+R="\e[31m"
+G="\e[32m"
+Y="\e[33m"
+N="\e[0m"
 
 mkdir -p /var/log/expense.logs
 

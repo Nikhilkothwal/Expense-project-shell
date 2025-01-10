@@ -7,10 +7,10 @@
 
 USERID=$(id -u)
 
-R="\[e31m"
-G="\[e32m"
+R="\e[31m"
+G="\e[32m"
 Y="\[e33m"
-N="\[e0m"
+N="\e[0m"
 
 mkdir -p /var/logs/expense.logs
 
