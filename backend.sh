@@ -9,18 +9,10 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
-LOG_FOLDER=/var/logs/expense-logs
+LOG_FOLDER="/var/logs/expense-logs"
 LOG_FILE=$(echo $0 | cut -d "." -f1)
 TIME_STAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
-
-CHECK_ROOT(){
-    if [ $USERID -ne 0 ]
-    then
-        echo -e "ERROR :: You must have sudo access for to run this command"
-        exit 1
-    fi    
-}
 
 VALIDATE(){
     if [ $1 -ne 0 ]
@@ -32,15 +24,23 @@ VALIDATE(){
     fi
 }
 
+CHECK_ROOT(){
+    if [ $USERID -ne 0 ]
+    then
+        echo -e "ERROR :: You must have sudo access for to run this command"
+        exit 1
+    fi    
+}
+
+echo "the script was run at $TIME_STAMP" &>>$LOGFILE_NAME
+
 CHECK_ROOT
-mkdir -p $LOG_FOLDER
-echo "the script was run at $TIME_STAMP"&>>$LOGFILE_NAME
 
 dnf module disable nodejs -y &>>$LOGFILE_NAME
-VALIDATE $? "Diabling nodejs"
+VALIDATE $? "Disabling existing nodejs"
 
 dnf module enable nodejs:20 -y &>>$LOGFILE_NAME
-VALIDATE $? "Enabling nodejs"
+VALIDATE $? "Enabling nodejs 20"
 
 dnf install nodejs -y &>>$LOGFILE_NAME
 VALIDATE $? "Installing nodejs"
@@ -55,19 +55,16 @@ else
 fi
 
 mkdir -p /app &>>$LOGFILE_NAME
-VALIDATE $?"Creating a directory for /app is"
+VALIDATE $? "Creating app directory"
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE_NAME
-VALIDATE $? "Downloading the application"
+VALIDATE $? "Downloading the backend app"
 
-cd /app &>>$LOGFILE_NAME
-VALIDATE $? "Change to /app directory"
-
-rm -rf /app/* &>>$LOGFILE_NAME
-VALIDATE $? "Remove all the existing files in /app"
+cd /app
+rm -rf /app/*
 
 unzip /tmp/backend.zip &>>$LOGFILE_NAME
-VALIDATE $? "Unzipping the file in"
+VALIDATE $? "Unzipping the file"
 
 npm install &>>$LOGFILE_NAME
 VALIDATE $? "Installing npm"
