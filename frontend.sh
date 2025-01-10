@@ -13,50 +13,51 @@ N="\[e0m"
 
 mkdir -p /var/log/expense.logs
 
-Log_folder="/var/log/expense.logs"
-Log_file=$(echo $0 | cut -d "." -f1)
-Timestamp=$(date +%d-%m-%Y-%H-%M-%S)
-Log_file_name="$Log_folder/$Log_file-$Timestamp.log"
+LOG_FOLDER=/var/logs/expense.logs
+LOG_FILE=$(echo $0 | cut -d"." -f1)
+TIME_STAMP=$(date %Y+%m+%d+%H+%M+%S)
+LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 
-Validate(){
-    if [ $1 -ne 0 ]; then
-        echo "$2 ...$R Failure $R"
+CHECK_ROOT(){
+    if [$USERID -ne 0]
+    then
+        echo -e "$R ERROR : You must have sudo access for to run this command $N"
+        exit 1
+    fi    
+}
+
+VALIDATE(){
+    if [$1 -ne 0]; then
+        echo "$2... $R FAILURE $N"
         exit 1
     else
-        echo "$2 ...$G Success $G"
-    fi
+        echo "$2.. $G SUCCESS $N" 
 }
 
-Check_root(){
-    if [ UserID -ne 0 ]; then
-    echo " $R Error: You should have root access to run this script $R"
-    exit 1
-    fi
-}
 
-dnf install nginx -y &>>$Log_file_name
-Validate $? "Installing nginx"
+dnf install nginx -y &>>$LOGFILE_NAME
+VALIDATE $? "Installing nginx"
 
-systemctl enable nginx &>>$Log_file_name
-Validate $? "Enabling nginx"
+systemctl enable nginx &>>$LOGFILE_NAME
+VALIDATE $? "Enabling nginx"
 
-systemctl start nginx &>>$Log_file_name
-Validate $? "Starting nginx"
+systemctl start nginx &>>$LOGFILE_NAME
+VALIDATE $? "Starting nginx"
 
-rm -rf /usr/share/nginx/html/* &>>$Log_file_name
-Validate $? "Removing existing files "
+rm -rf /usr/share/nginx/html/* &>>$LOGFILE_NAME
+VALIDATE $? "Removing existing files "
 
-curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip &>>$Log_file_name
-Validate $? "Downloading application is "
+curl -o /tmp/frontend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip &>>$LOGFILE_NAME
+VALIDATE $? "Downloading application is "
 
-cd /usr/share/nginx/html &>>$Log_file_name
-Validate $? "Installing nginx"
+cd /usr/share/nginx/html &>>$LOGFILE_NAME
+VALIDATE $? "Installing nginx"
 
-unzip /tmp/frontend.zip &>>$Log_file_name
-Validate $? "Installing nginx"
+unzip /tmp/frontend.zip &>>$LOGFILE_NAME
+VALIDATE $? "Installing nginx"
 
-cp /home/ec2-user/Expense-Shell-Project/frontend.service /etc/nginx/default.d/expense.conf &>>$Log_file_name
-Validate $? "Creating Nginx Reverse Proxy"
+cp /home/ec2-user/Expense-project-shell/frontend.service /etc/nginx/default.d/expense.conf &>>$LOGFILE_NAME
+VALIDATE $? "Creating Nginx Reverse Proxy"
 
-systemctl restart nginx &>>$Log_file_name
-Validate $? "Restarting nginx"
+systemctl restart nginx &>>$LOGFILE_NAME
+VALIDATE $? "Restarting nginx"

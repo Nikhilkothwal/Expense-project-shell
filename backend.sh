@@ -12,76 +12,76 @@ N="\[e0m"
 
 mkdir -p /var/log/expense.logs
 
-Log_folder="/var/log/expense.logs"
-Log_file=$(echo $0 | cut -d "." -f1)
-Timestamp=$(date +%Y-%m-%d-%H-%M-%S)
-Log_file_name="$Log_folder/$Log_file-$Timestamp.log"
+LOG_FOLDER=/var/logs/expense.logs
+LOG_FILE=$(echo $0 | cut -d"." -f1)
+TIME_STAMP=$(date %Y+%m+%d+%H+%M+%S)
+LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 
-Validate(){
-    if [ $1 -ne 0 ]; then
-        echo -e "$2 ...$R Failure $N"
+CHECK_ROOT(){
+    if [$USERID -ne 0]
+    then
+        echo -e "$R ERROR : You must have sudo access for to run this command $N"
+        exit 1
+    fi    
+}
+
+VALIDATE(){
+    if [$1 -ne 0]; then
+        echo "$2... $R FAILURE $N"
         exit 1
     else
-        echo -e "$2 ...$G Success $N"
-    fi
+        echo "$2.. $G SUCCESS $N" 
 }
 
-Check_root(){
-    if [ UserID -ne 0 ]; then
-        echo " $R Error: You should have root access to run this script $N"
-        exit 1
-    fi
-}
+dnf module disable nodejs -y &>>$LOGFILE_NAME
+VALIDATE $? "Diabling nodejs"
 
-dnf module disable nodejs -y &>>$Log_file_name
-Validate $? "Diabling nodejs"
+dnf module enable nodejs:20 -y &>>$LOGFILE_NAME
+VALIDATE $? "Enabling nodejs"
 
-dnf module enable nodejs:20 -y &>>$Log_file_name
-Validate $? "Enabling nodejs"
+dnf install nodejs -y &>>$LOGFILE_NAME
+VALIDATE $? "Installing nodejs"
 
-dnf install nodejs -y &>>$Log_file_name
-Validate $? "Installing nodejs"
-
-id expense &>>$Log_file_name
+id expense &>>$LOGFILE_NAME
 
 if [ $? -ne 0 ]; then
-useradd expense &>>$Log_file_name
-Validate $? "Adding user was"
+useradd expense &>>$LOGFILE_NAME
+VALIDATE $? "Adding user was"
 else
 echo -e "expense user already exists ....$Y Skipping $N"
 fi
 
-mkdir -p /app &>>$Log_file_name
-Validate $?"Creating a directory for /app is"
+mkdir -p /app &>>$LOGFILE_NAME
+VALIDATE $?"Creating a directory for /app is"
 
-curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$Log_file_name
-Validate $? "Downloading the application"
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE_NAME
+VALIDATE $? "Downloading the application"
 
-cd /app &>>$Log_file_name
-Validate $? "Change to /app directory"
+cd /app &>>$LOGFILE_NAME
+VALIDATE $? "Change to /app directory"
 
-rm -rf /app/* &>>$Log_file_name
-Validate $? "Remove all the existing files in /app"
+rm -rf /app/* &>>$LOGFILE_NAME
+VALIDATE $? "Remove all the existing files in /app"
 
-unzip /tmp/backend.zip &>>$Log_file_name
-Validate $? "Unzipping the file in "
+unzip /tmp/backend.zip &>>$LOGFILE_NAME
+VALIDATE $? "Unzipping the file in "
 
-npm install &>>$Log_file_name
-Validate $? "Installing npm"
+npm install &>>$LOGFILE_NAME
+VALIDATE $? "Installing npm"
 
-cp /home/ec2-user/Expense-Shell-Project/backend.service /etc/systemd/system/backend.service
+cp /home/ec2-user/Expense-project-shell/backend.service /etc/systemd/system/backend.service
 
-dnf install mysql -y &>>$Log_file_name
-Validate $? "Installing mysql client"
+dnf install mysql -y &>>$LOGFILE_NAME
+VALIDATE $? "Installing mysql client"
 
-mysql -h database-server.nithinlearning.site -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$Log_file_name
-Validate $? "Setting up transactions schema and tables"
+mysql -h mysql.kothwal.site -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOGFILE_NAME
+VALIDATE $? "Setting up transactions schema and tables"
 
-systemctl daemon-reload &>>$Log_file_name
-Validate $? "Deamon reload"
+systemctl daemon-reload &>>$LOGFILE_NAME
+VALIDATE $? "Deamon reload"
 
-systemctl enable backend &>>$Log_file_name
-Validate $? "Enabling backend service"
+systemctl enable backend &>>$LOGFILE_NAME
+VALIDATE $? "Enabling backend service"
 
-sudo systemctl restart backend &>>$Log_file_name
-Validate $? "Restarting backend serice"
+sudo systemctl restart backend &>>$LOGFILE_NAME
+VALIDATE $? "Restarting backend serice"
