@@ -14,7 +14,7 @@ mkdir -p /var/log/expense.logs
 
 LOG_FOLDER=/var/logs/expense.logs
 LOG_FILE=$(echo $0 | cut -d"." -f1)
-TIME_STAMP=$(date %Y+%m+%d+%H+%M+%S)
+TIME_STAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 
 CHECK_ROOT(){
