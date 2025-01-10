@@ -33,6 +33,7 @@ VALIDATE(){
         exit 1
     else
         echo "$2.. $G SUCCESS $N" 
+    fi
 }
 
 echo "the script was running at: $TIME_STAMP" &>> LOGFILE_NAME
