@@ -34,6 +34,8 @@ VALIDATE(){
         echo "$2.. $G SUCCESS $N" 
 }
 
+CHECK_ROOT
+
 dnf module disable nodejs -y &>>$LOGFILE_NAME
 VALIDATE $? "Diabling nodejs"
 
@@ -44,12 +46,12 @@ dnf install nodejs -y &>>$LOGFILE_NAME
 VALIDATE $? "Installing nodejs"
 
 id expense &>>$LOGFILE_NAME
-
-if [ $? -ne 0 ]; then
-useradd expense &>>$LOGFILE_NAME
-VALIDATE $? "Adding user was"
+if [ $? -ne 0]
+then
+    useradd expense &>>$LOGFILE_NAME
+    VALIDATE $? "Adding user was"
 else
-echo -e "expense user already exists ....$Y Skipping $N"
+    echo -e "expense user already exists ....$Y Skipping $N"
 fi
 
 mkdir -p /app &>>$LOGFILE_NAME
@@ -65,7 +67,7 @@ rm -rf /app/* &>>$LOGFILE_NAME
 VALIDATE $? "Remove all the existing files in /app"
 
 unzip /tmp/backend.zip &>>$LOGFILE_NAME
-VALIDATE $? "Unzipping the file in "
+VALIDATE $? "Unzipping the file in"
 
 npm install &>>$LOGFILE_NAME
 VALIDATE $? "Installing npm"

@@ -35,6 +35,7 @@ VALIDATE(){
         echo "$2.. $G SUCCESS $N" 
 }
 
+CHECK_ROOT
 
 dnf install nginx -y &>>$LOGFILE_NAME
 VALIDATE $? "Installing nginx"
