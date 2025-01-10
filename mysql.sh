@@ -20,7 +20,7 @@ TIME_STAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 
 CHECK_ROOT(){
-    if [$USERID -ne 0]
+    if [$USERID -ne 0 ]
     then
         echo -e "$R ERROR : You must have sudo access for to run this command $N"
         exit 1
@@ -28,7 +28,8 @@ CHECK_ROOT(){
 }
 
 VALIDATE(){
-    if [$1 -ne 0]; then
+    if [$1 -ne 0 ]
+    then
         echo -e "$2... $R FAILURE $N"
         exit 1
     else
@@ -36,7 +37,7 @@ VALIDATE(){
     fi
 }
 
-echo "the script was running at: $TIME_STAMP" &>> LOGFILE_NAME
+echo "the script was running at: $TIME_STAMP" &>>LOGFILE_NAME
 
 dnf install mysql -y &>>LOGFILE_NAME
 VALIDATE $? "Installing mysql.."
