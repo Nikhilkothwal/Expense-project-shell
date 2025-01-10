@@ -19,7 +19,7 @@ LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 CHECK_ROOT(){
     if [$USERID -ne 0]
     then
-        echo -e "ERROR : You must have sudo access for to run this command"
+        echo -e "ERROR :: You must have sudo access for to run this command"
         exit 1
     fi    
 }

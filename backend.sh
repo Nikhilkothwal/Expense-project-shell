@@ -17,7 +17,7 @@ LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 CHECK_ROOT(){
     if [ $USERID -ne 0 ]
     then
-        echo -e "$R ERROR : You must have sudo access for to run this command $N"
+        echo -e "ERROR :: You must have sudo access for to run this command"
         exit 1
     fi    
 }
@@ -33,7 +33,7 @@ VALIDATE(){
 }
 
 CHECK_ROOT
-
+mkdir -p $LOG_FOLDER
 echo "the script was run at $TIME_STAMP"&>>$LOGFILE_NAME
 
 dnf module disable nodejs -y &>>$LOGFILE_NAME
