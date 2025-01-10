@@ -55,12 +55,12 @@ VALIDATE $? "Starting mysql.."
 
 mysql -h mysql.kothwal.site -u root -pExpenseApp@1 -e 'show databases;' &>>LOGFILE_NAME
 
-if [$? -ne 0]
+if [ $? -ne 0 ]
 then
     echo "mysql root user setup was not successful"&>>LOGFILE_NAME
     mysql_secure_installation --set-root-pass ExpenseApp@1
     VALIDATE $? "setting root password"
 else
-    echo -e "mysql root password was already setup $Y SKIPPING $N"
+    echo -e "mysql root password was already setup... $Y SKIPPING $N"
 fi
 
