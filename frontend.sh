@@ -11,23 +11,21 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
-mkdir -p /var/log/expense.logs
-
-LOG_FOLDER=/var/logs/expense.logs
-LOG_FILE=$(echo $0 | cut -d"." -f1)
+LOG_FOLDER=/var/logs/expense-logs
+LOG_FILE=$(echo $0 | cut -d "." -f1)
 TIME_STAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 
 CHECK_ROOT(){
     if [$USERID -ne 0]
     then
-        echo -e "$R ERROR : You must have sudo access for to run this command $N"
+        echo -e "ERROR : You must have sudo access for to run this command"
         exit 1
     fi    
 }
 
 VALIDATE(){
-    if [$1 -ne 0 ]
+    if [ $1 -ne 0 ]
     then
         echo "$2... $R FAILURE $N"
         exit 1
@@ -37,6 +35,9 @@ VALIDATE(){
 }
 
 CHECK_ROOT
+
+mkdir -p $LOG_FOLDER
+echo "the script was run at $TIME_STAMP"&>>$LOGFILE_NAME
 
 dnf install nginx -y &>>$LOGFILE_NAME
 VALIDATE $? "Installing nginx"
