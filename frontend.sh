@@ -17,7 +17,7 @@ TIME_STAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGFILE_NAME="$LOG_FOLDER/$LOG_FILE-$TIME_STAMP.log"
 
 CHECK_ROOT(){
-    if [$USERID -ne 0]
+    if [ $USERID -ne 0 ]
     then
         echo -e "ERROR :: You must have sudo access for to run this command"
         exit 1
